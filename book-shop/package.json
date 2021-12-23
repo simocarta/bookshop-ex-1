@@ -1,13 +1,14 @@
 {
-  "name": "hello_world",
+  "name": "book_shop",
   "version": "1.0.0",
-  "description": "hello world sample for NodeJS",
-  "main": "app.js",
+  "description": "Sample SAM app for exercice 1",
+  "main": "main.js",
   "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1"
+    "@aws-sdk/client-dynamodb": "^3.44.0",
+    "@aws-sdk/lib-dynamodb": "^3.44.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"
