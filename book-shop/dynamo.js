@@ -43,15 +43,11 @@ const getBooksStartWith = async (root) => {
 const getBooksOf = async (auth) => {
     const params = {
         TableName: process.env.DB,
-        IndexName: 'GSI_1',
-        KeyConditionExpression: "sk = :pk",
-        FilterExpression: "#ex = :au)",
+        IndexName: 'GSI_2',
+        KeyConditionExpression: "pk = :au AND sk = :pk",
         ExpressionAttributeValues: {
             ":pk": "Book#Detail",
             ":au": auth
-        },
-        ExpressionAttributeNames: {
-            "#ex": "External_ID"
         },
     };
   
@@ -61,4 +57,4 @@ const getBooksOf = async (auth) => {
 
 
 
-module.exports = { getCustomers, getBooksStartWith };
+module.exports = { getCustomers, getBooksStartWith, getBooksOf };
