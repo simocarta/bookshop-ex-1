@@ -44,11 +44,14 @@ const getBooksOf = async (auth) => {
     const params = {
         TableName: process.env.DB,
         IndexName: 'GSI_2',
-        KeyConditionExpression: "pk = :au AND sk = :pk",
+        KeyConditionExpression: "#ex = :au AND sk = :pk",
         ExpressionAttributeValues: {
             ":pk": "Book#Detail",
             ":au": auth
         },
+        ExpressionAttributeNames: {
+            "#ex": "External_ID"
+        }
     };
   
     const result = await ddbDocClient.send(new QueryCommand(params));

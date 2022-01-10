@@ -19,6 +19,8 @@ Resources:
           AttributeType: "S"
         - AttributeName: sk
           AttributeType: "S"
+        - AttributeName: External_ID
+          AttributeType: "S"
       KeySchema: 
         - AttributeName: pk
           KeyType: HASH
@@ -38,9 +40,9 @@ Resources:
             WriteCapacityUnits: 1
         - IndexName: GSI_2
           KeySchema:
-            - AttributeName: sk
-              KeyType: HASH
             - AttributeName: External_ID
+              KeyType: HASH
+            - AttributeName: sk
               KeyType: RANGE
           Projection:
             ProjectionType: ALL

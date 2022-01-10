@@ -1,4 +1,4 @@
-const { getCustomers } = require('./dynamo');
+const { getCustomers, getBooksStartWith, getBooksOf } = require('./dynamo');
 
 let response;
 
