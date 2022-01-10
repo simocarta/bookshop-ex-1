@@ -40,7 +40,24 @@ const getBooksStartWith = async (root) => {
     return result.Items;
 };
 
+const getBooksOf = async (auth) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_2',
+        KeyConditionExpression: "#ex = :au AND sk = :pk",
+        ExpressionAttributeValues: {
+            ":pk": "Book#Detail",
+            ":au": auth
+        },
+        ExpressionAttributeNames: {
+            "#ex": "External_ID"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
 
-module.exports = { getCustomers };
+module.exports = { getCustomers, getBooksStartWith, getBooksOf };
