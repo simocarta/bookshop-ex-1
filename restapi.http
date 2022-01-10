@@ -1,8 +1,8 @@
 
-//GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api
+GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api?v=abc
 
 
 
-GET http://127.0.0.1:3000/api
+//GET http://127.0.0.1:3000/api
 
 

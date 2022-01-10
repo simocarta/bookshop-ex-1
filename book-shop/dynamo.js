@@ -20,25 +20,26 @@ const getCustomers = async () => {
     return result.Items ?? 0;
 };
 
-/*
-const getBooksStartQith = async (root) => {
+
+const getBooksStartWith = async (root) => {
     const params = {
         TableName: process.env.DB,
         IndexName: 'GSI_1',
         KeyConditionExpression: "sk = :pk",
+        FilterExpression: "begins_with(#n, :n)",
         ExpressionAttributeValues: {
-            ":pk": "Book#Detail"
+            ":pk": "Book#Detail",
+            ":n": "Name"
         },
-        FilterExpression: "#n BEGINS_WITH " + root,
         ExpressionAttributeNames: {
-            "#n": "Name"
+            "#n": root
         },
     };
   
     const result = await ddbDocClient.send(new QueryCommand(params));
     return result.Items ?? 0;
 };
-*/
+
 
 
 
