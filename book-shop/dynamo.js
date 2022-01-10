@@ -20,6 +20,25 @@ const getCustomers = async () => {
     return result.Items ?? 0;
 };
 
+/*
+const getBooksStartQith = async (root) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :pk",
+        ExpressionAttributeValues: {
+            ":pk": "Book#Detail"
+        },
+        FilterExpression: "#n BEGINS_WITH " + root,
+        ExpressionAttributeNames: {
+            "#n": "Name"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items ?? 0;
+};
+*/
 
 
 
