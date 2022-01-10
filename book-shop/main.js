@@ -7,7 +7,8 @@ exports.lambdaHandler = async (event, context) => {
         response = {
             'statusCode': 200,
             'body': JSON.stringify({
-                message: getCustomers(),
+                //message: await getCustomers(),
+                message: await getBooksStartWith(event.queryStringParameters.search)
             })
         }
     } catch (err) {
