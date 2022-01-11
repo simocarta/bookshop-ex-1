@@ -120,6 +120,24 @@ const getWharehouseInBasketOf = async (cust) => {
     return out;
 };
 
+const getAuthor = async (auth) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            pk: 'CURRENT',
+            sk: 'CURRENT',
+        },
+        KeyConditionExpression: "pk = :pk AND sk = :sk",
+        ExpressionAttributeValues: {
+            ":pk": auth,
+            ":sk": "Author#Detail"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf };
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor };
