@@ -1,4 +1,4 @@
-const { getCustomers, getBooksStartWith, getBooksOf } = require('./dynamo');
+const { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy } = require('./dynamo');
 
 let response;
 
@@ -8,7 +8,7 @@ exports.lambdaHandler = async (event, context) => {
             'statusCode': 200,
             'body': JSON.stringify({
                 //message: await getCustomers(),
-                message: await getBooksOf(event.queryStringParameters.search)
+                message: await getBooksSelledBy(event.queryStringParameters.search)
             })
         }
     } catch (err) {

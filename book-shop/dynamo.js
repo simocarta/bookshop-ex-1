@@ -20,7 +20,6 @@ const getCustomers = async () => {
     return result.Items;
 };
 
-
 const getBooksStartWith = async (root) => {
     const params = {
         TableName: process.env.DB,
@@ -58,6 +57,44 @@ const getBooksOf = async (auth) => {
     return result.Items;
 };
 
+const getBooksInBasketOf = async (cust) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_2',
+        KeyConditionExpression: "#ex = :cu AND begins_with(sk, :pk)",
+        ExpressionAttributeValues: {
+            ":pk": "Item",
+            ":cu": cust
+        },
+        ExpressionAttributeNames: {
+            "#ex": "External_ID"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
+
+const getBooksSelledBy = async (publ) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :pk",
+        FilterExpression: "#pi = :pu",
+        ExpressionAttributeValues: {
+            ":pk": "Book#Detail",
+            ":pu": publ
+        },
+        ExpressionAttributeNames: {
+            "#pi": "Publisher_ID"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf };
+
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy };
