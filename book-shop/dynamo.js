@@ -94,7 +94,26 @@ const getBooksSelledBy = async (publ) => {
     return result.Items;
 };
 
+const getWharehouseInBasketOf = async (cust) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_2',
+        ProjectionExpression: "Wharehouse_ID",
+        ScanIndexForward: true,
+        KeyConditionExpression: "#ex = :cu AND begins_with(sk, :pk)",
+        ExpressionAttributeValues: {
+            ":pk": "Item",
+            ":cu": cust
+        },
+        ExpressionAttributeNames: {
+            "#ex": "External_ID"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy };
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf };
