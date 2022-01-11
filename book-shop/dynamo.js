@@ -156,6 +156,24 @@ const getBook = async (isbn) => {
     return result.Items;
 };
 
+const getCustomer = async (cust) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            pk: 'CURRENT',
+            sk: 'CURRENT',
+        },
+        KeyConditionExpression: "pk = :pk AND sk = :sk",
+        ExpressionAttributeValues: {
+            ":pk": cust,
+            ":sk": "Customer#Detail"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook };
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer };
