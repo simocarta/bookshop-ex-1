@@ -111,7 +111,13 @@ const getWharehouseInBasketOf = async (cust) => {
     };
   
     const result = await ddbDocClient.send(new QueryCommand(params));
-    return result.Items;
+    // Fa una sorta di GROUP BY
+    let out = [];
+    result.Items.forEach(item => {
+        if(!out.some(o => o.Wharehouse_ID == item.Wharehouse_ID))
+            out.push(item);
+    });
+    return out;
 };
 
 
