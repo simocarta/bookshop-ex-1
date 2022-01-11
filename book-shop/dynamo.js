@@ -174,6 +174,25 @@ const getCustomer = async (cust) => {
     return result.Items;
 };
 
+const getBooksOfYear = async (year) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :pk",
+        FilterExpression: "#yy = :yy",
+        ExpressionAttributeValues: {
+            ":pk": "Book#Detail",
+            ":yy": parseInt(year)
+        },
+        ExpressionAttributeNames: {
+            "#yy": "Year"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer };
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear };
