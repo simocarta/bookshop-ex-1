@@ -99,7 +99,6 @@ const getWharehouseInBasketOf = async (cust) => {
         TableName: process.env.DB,
         IndexName: 'GSI_2',
         ProjectionExpression: "Wharehouse_ID",
-        ScanIndexForward: true,
         KeyConditionExpression: "#ex = :cu AND begins_with(sk, :pk)",
         ExpressionAttributeValues: {
             ":pk": "Item",
@@ -120,6 +119,61 @@ const getWharehouseInBasketOf = async (cust) => {
     return out;
 };
 
+const getAuthor = async (auth) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            pk: 'CURRENT',
+            sk: 'CURRENT',
+        },
+        KeyConditionExpression: "pk = :pk AND sk = :sk",
+        ExpressionAttributeValues: {
+            ":pk": auth,
+            ":sk": "Author#Detail"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
+
+const getBook = async (isbn) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :sk",
+        FilterExpression: "#ib = :ib",
+        ExpressionAttributeValues: {
+            ":sk": "Book#Detail",
+            ":ib": parseInt(isbn)
+        },
+        ExpressionAttributeNames: {
+            "#ib": "ISBN"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
+
+const getCustomer = async (cust) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            pk: 'CURRENT',
+            sk: 'CURRENT',
+        },
+        KeyConditionExpression: "pk = :pk AND sk = :sk",
+        ExpressionAttributeValues: {
+            ":pk": cust,
+            ":sk": "Customer#Detail"
+        },
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf };
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer };
