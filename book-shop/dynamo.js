@@ -193,6 +193,41 @@ const getBooksOfYear = async (year) => {
     return result.Items;
 };
 
+const getBookInWharehouses = async (book) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_2',
+        KeyConditionExpression: "#ex = :pk",
+        ExpressionAttributeValues: {
+            ":pk": book,
+        },
+        ExpressionAttributeNames: {
+            "#ex": "External_ID"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
+
+const getBooksAvailable = async (whar) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            pk: 'CURRENT',
+            sk: 'CURRENT',
+        },
+        KeyConditionExpression: "pk = :pk AND begins_with(sk, :sk)",
+        ExpressionAttributeValues: {
+            ":pk": whar,
+            ":sk": "BookItem"
+        }
+    };
+  
+    const result = await ddbDocClient.send(new QueryCommand(params));
+    return result.Items;
+};
 
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear };
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear, getBookInWharehouses, getBooksAvailable };
