@@ -1,5 +1,5 @@
 
-GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api?book=BookItem%231&whar=Wharehouse%231&newn=-4
+GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api?book=Book%231&whar=Wharehouse%231&newn=-4
 
 
 

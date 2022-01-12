@@ -197,13 +197,11 @@ const getBooksOfYear = async (year) => {
 const getBookInWharehouses = async (book) => {
     const params = {
         TableName: process.env.DB,
-        IndexName: 'GSI_2',
-        KeyConditionExpression: "#ex = :pk",
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :sk AND begins_with(pk, :pk)",
         ExpressionAttributeValues: {
-            ":pk": book,
-        },
-        ExpressionAttributeNames: {
-            "#ex": "External_ID"
+            ":sk": book,
+            ":pk": "Wharehouse"
         }
     };
   
@@ -221,7 +219,7 @@ const getBooksAvailable = async (whar) => {
         KeyConditionExpression: "pk = :pk AND begins_with(sk, :sk)",
         ExpressionAttributeValues: {
             ":pk": whar,
-            ":sk": "BookItem"
+            ":sk": "Book"
         }
     };
   
@@ -250,7 +248,7 @@ const updateBookAvailable = async (book, whar, newn) => {
     };
   
     const result = await ddbDocClient.send(new UpdateCommand(params));
-    return result;
+    return result.Attributes.Count;
 }
 
 
