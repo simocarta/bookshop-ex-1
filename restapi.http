@@ -1,0 +1,8 @@
+
+GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api?search=2021
+
+
+
+//GET http://127.0.0.1:3000/api?search=Customer%231
+
+

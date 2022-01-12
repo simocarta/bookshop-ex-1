@@ -4,38 +4,90 @@ Description: >
   bookshop-ex-1
 
   Sample SAM Template for bookshop-ex-1
-  
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  BookShopDynamoDB:
+    Type: AWS::DynamoDB::Table
     Properties:
-      CodeUri: hello-world/
-      Handler: app.lambdaHandler
+      TableName: book_shop
+      AttributeDefinitions: 
+        - AttributeName: pk
+          AttributeType: "S"
+        - AttributeName: sk
+          AttributeType: "S"
+        - AttributeName: External_ID
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI_1
+          KeySchema:
+            - AttributeName: sk
+              KeyType: HASH
+            - AttributeName: pk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: GSI_2
+          KeySchema:
+            - AttributeName: External_ID
+              KeyType: HASH
+            - AttributeName: sk
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+  
+  BookShopFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book-shop/
+      Handler: main.lambdaHandler
       Runtime: nodejs14.x
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          DB: !Ref BookShopDynamoDB
+      Description: Book shop for exercice 1
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BookShopDynamoDB
       Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        BookShop:
+          Type: Api
           Properties:
-            Path: /hello
+            Path: /api
             Method: get
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  BookShopApi:
+    Description: "API Gateway endpoint URL for Prod stage for Book Shop function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/"
+  BookShopFunction:
+    Description: "Book Shop Lambda Function ARN"
+    Value: !GetAtt BookShopFunction.Arn
+  BookShopDynamoDB:
+    Description: "ARN of DynamoDB (Aggiunto da me per prova)"
+    Value: !GetAtt BookShopDynamoDB.Arn
+  BookShopFunctionIamRole:
+    Description: "Implicit IAM Role created for Book Shop function"
+    Value: !GetAtt BookShopFunctionRole.Arn

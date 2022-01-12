@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "bookshop-ex-1"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-5d1cdoidgaus"
+s3_prefix = "bookshop-ex-1"
+region = "eu-west-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
