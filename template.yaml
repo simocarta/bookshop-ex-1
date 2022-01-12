@@ -77,6 +77,12 @@ Resources:
           Properties:
             Path: /api
             Method: get
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt BookShopDynamoDB.StreamArn
+            BatchSize: 10
+            StartingPosition: TRIM_HORIZON
 
 Outputs:
   BookShopApi:
