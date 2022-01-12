@@ -5,6 +5,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const client = new DynamoDBClient();
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 
+// GETTER METHODS
 
 const getCustomers = async () => {
     const params = {
@@ -229,5 +230,29 @@ const getBooksAvailable = async (whar) => {
 };
 
 
+// UPDATE METHODS
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear, getBookInWharehouses, getBooksAvailable };
+const updateBookAvailable = async (book, whar, newn, add = false) => {
+    const params = {
+        TableName: process.env.DB,
+        IndexName: 'GSI_2',
+        KeyConditionExpression: "#ex = :pk AND sk = :bo",
+        UpdateExpression: ((add)? 'ADD' : 'SUB') + ' #co :nn',
+        ExpressionAttributeValues: {
+          ':nn': parseInt(newn),
+          ":pk": whar,
+          ":bo": book,
+        },
+        ExpressionAttributeNames: {
+          '#co': 'Count',
+          "#ex": "External_ID"
+        },
+        ReturnValues: 'UPDATED_NEW',
+    };
+  
+    const result = await ddbDocClient.send(new UpdateCommand(params));
+    return result;
+}
+
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear, getBookInWharehouses, getBooksAvailable, updateBookAvailable };
