@@ -3,12 +3,13 @@ const { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBook
 let response;
 
 exports.lambdaHandler = async (event, context) => {
+    let uri = event.queryStringParameters;
     try {
         response = {
             'statusCode': 200,
             'body': JSON.stringify({
                 //message: await getCustomers(),
-                message: await updateBookAvailable(event.queryStringParameters.search)
+                message: await updateBookAvailable(uri.book, uri.whar, uri.newn)
             })
         }
     } catch (err) {

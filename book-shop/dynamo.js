@@ -232,20 +232,19 @@ const getBooksAvailable = async (whar) => {
 
 // UPDATE METHODS
 
-const updateBookAvailable = async (book, whar, newn, add = false) => {
+const updateBookAvailable = async (book, whar, newn) => {
     const params = {
         TableName: process.env.DB,
-        IndexName: 'GSI_2',
-        KeyConditionExpression: "#ex = :pk AND sk = :bo",
-        UpdateExpression: ((add)? 'ADD' : 'SUB') + ' #co :nn',
+        Key: {
+            'pk': whar,
+            'sk': book
+        },
+        UpdateExpression: 'ADD #co :nn',
         ExpressionAttributeValues: {
-          ':nn': parseInt(newn),
-          ":pk": whar,
-          ":bo": book,
+          ':nn': parseInt(newn)
         },
         ExpressionAttributeNames: {
-          '#co': 'Count',
-          "#ex": "External_ID"
+          '#co': 'Count'
         },
         ReturnValues: 'UPDATED_NEW',
     };
