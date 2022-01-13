@@ -1,8 +1,22 @@
+// Get Customers
+//GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api/customers
 
-GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api?book=Book%231&whar=Wharehouse%231&newn=-4
+// Get book start with <title>
+//GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api/bookstartwith?title=Titolo
+
+// Get book start with <book> <whar> <newn>
+GET https://18qvh7n8oe.execute-api.eu-west-1.amazonaws.com/Prod/api/updatebookavailable?book=Book%231&whar=Wharehouse%231&newn=1
 
 
 
-//GET http://127.0.0.1:3000/api?search=Customer%231
+
+
+
+
+
+
+
+// Local
+//GET http://127.0.0.1:3000/api/search?search=Customer%231
 
 
