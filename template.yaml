@@ -60,6 +60,8 @@ Resources:
     Properties:
       CodeUri: book-shop/
       Handler: main.lambdaHandler
+      Layers:
+        - !Ref DynamoNodeFunctionsLayer
       Runtime: nodejs14.x
       Architectures:
         - x86_64
@@ -77,6 +79,18 @@ Resources:
           Properties:
             Path: /api/{cmd+}
             Method: get
+  
+  DynamoNodeFunctionsLayer:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName: dynamodb-queries
+            Description: Dependencies for sam app (script per db)
+            ContentUri: dependencies/
+            CompatibleRuntimes:
+              - nodejs14.x
+              - nodejs8.10
+            LicenseInfo: 'MIT'
+            RetentionPolicy: Retain
   
   BookShopStreamFunction:
     Type: AWS::Serverless::Function
