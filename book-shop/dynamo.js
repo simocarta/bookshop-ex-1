@@ -5,6 +5,7 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const client = new DynamoDBClient();
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 
+// GETTER METHODS
 
 const getCustomers = async () => {
     const params = {
@@ -196,13 +197,11 @@ const getBooksOfYear = async (year) => {
 const getBookInWharehouses = async (book) => {
     const params = {
         TableName: process.env.DB,
-        IndexName: 'GSI_2',
-        KeyConditionExpression: "#ex = :pk",
+        IndexName: 'GSI_1',
+        KeyConditionExpression: "sk = :sk AND begins_with(pk, :pk)",
         ExpressionAttributeValues: {
-            ":pk": book,
-        },
-        ExpressionAttributeNames: {
-            "#ex": "External_ID"
+            ":sk": book,
+            ":pk": "Wharehouse"
         }
     };
   
@@ -220,7 +219,7 @@ const getBooksAvailable = async (whar) => {
         KeyConditionExpression: "pk = :pk AND begins_with(sk, :sk)",
         ExpressionAttributeValues: {
             ":pk": whar,
-            ":sk": "BookItem"
+            ":sk": "Book"
         }
     };
   
@@ -229,5 +228,28 @@ const getBooksAvailable = async (whar) => {
 };
 
 
+// UPDATE METHODS
 
-module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear, getBookInWharehouses, getBooksAvailable };
+const updateBookAvailable = async (book, whar, newn) => {
+    const params = {
+        TableName: process.env.DB,
+        Key: {
+            'pk': whar,
+            'sk': book
+        },
+        UpdateExpression: 'ADD #co :nn',
+        ExpressionAttributeValues: {
+          ':nn': parseInt(newn)
+        },
+        ExpressionAttributeNames: {
+          '#co': 'Count'
+        },
+        ReturnValues: 'UPDATED_NEW',
+    };
+  
+    const result = await ddbDocClient.send(new UpdateCommand(params));
+    return result.Attributes.Count;
+}
+
+
+module.exports = { getCustomers, getBooksStartWith, getBooksOf, getBooksInBasketOf, getBooksSelledBy, getWharehouseInBasketOf, getAuthor, getBook, getCustomer, getBooksOfYear, getBookInWharehouses, getBooksAvailable, updateBookAvailable };

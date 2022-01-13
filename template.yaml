@@ -77,6 +77,23 @@ Resources:
           Properties:
             Path: /api
             Method: get
+  
+  BookShopStreamFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book-shop-stream/
+      Handler: stream.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Description: Book shop stream for exercice 1
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt BookShopDynamoDB.StreamArn
+            BatchSize: 10
+            StartingPosition: TRIM_HORIZON
 
 Outputs:
   BookShopApi:
