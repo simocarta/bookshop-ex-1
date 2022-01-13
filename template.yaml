@@ -75,7 +75,7 @@ Resources:
         BookShop:
           Type: Api
           Properties:
-            Path: /api
+            Path: /api/{cmd+}
             Method: get
   
   BookShopStreamFunction:
