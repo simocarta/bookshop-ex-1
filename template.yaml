@@ -55,11 +55,36 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
   
+  DependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        LayerName: dependencies-node-level
+        Description: Dependencies for sam app
+        ContentUri: dependencies/
+        CompatibleRuntimes:
+          - nodejs14.x
+        LicenseInfo: 'MIT'
+        RetentionPolicy: Retain
+  
+  DynamoNodeFunctionsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        LayerName: dynamodb-queries
+        Description: Script for queries of DynamoDB
+        ContentUri: dynamo-layer/
+        CompatibleRuntimes:
+          - nodejs14.x
+        LicenseInfo: 'MIT'
+        RetentionPolicy: Retain
+
   BookShopFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: book-shop/
       Handler: main.lambdaHandler
+      Layers:
+        - !Ref DependenciesLayer
+        - !Ref DynamoNodeFunctionsLayer
       Runtime: nodejs14.x
       Architectures:
         - x86_64
@@ -75,8 +100,27 @@ Resources:
         BookShop:
           Type: Api
           Properties:
-            Path: /api
+            Path: /api/{cmd+}
             Method: get
+  
+  BookShopStreamFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: book-shop-stream/
+      Handler: stream.lambdaHandler
+      Layers:
+        - !Ref DependenciesLayer
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Description: Book shop stream for exercice 1
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt BookShopDynamoDB.StreamArn
+            BatchSize: 10
+            StartingPosition: TRIM_HORIZON
 
 Outputs:
   BookShopApi:
